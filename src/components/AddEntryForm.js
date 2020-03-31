@@ -16,7 +16,7 @@ const AddEntryForm = ({ createEntry }) => {
 
 		setNewEntryContent('')
 	}
-	
+
 	return (
 		<div>
 			<h2>Create a new entry</h2>
