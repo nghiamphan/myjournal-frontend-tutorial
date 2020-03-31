@@ -24,7 +24,6 @@ const Footer = () => {
 
 const App = () => {
   const [entries, setEntries] = useState([])
-  const [newEntry, setNewEntry] = useState('new entry...')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const [username, setUsername] = useState('')
@@ -80,25 +79,13 @@ const App = () => {
     />
   )
 
-  const addEntry = (event) => {
-    event.preventDefault()
-    const entryObject = {
-      content: newEntry,
-      date: new Date().toISOString(),
-      important: Math.random() > 0.5,
-    }
-
+  const addEntry = (entryObject) => {
     // Note: there is a diff b/w entryObject and response.data is that id attribute is automatically created in response.data
     journalEntryService
       .create(entryObject)
       .then(returnedEntry => {
         setEntries(entries.concat(returnedEntry))
-        setNewEntry('')
       })
-  }
-
-  const handleEntryChange = (event) => {
-    setNewEntry(event.target.value)
   }
 
   const handleLogin = async (event) => {
@@ -142,11 +129,7 @@ const App = () => {
 
 	const addJournalEntryForm = () => (
 		<Toggleable buttonLabel="new entry">
-			<AddEntryForm
-				onSubmit={addEntry}
-				value={newEntry}
-				handleChange={handleEntryChange}
-			/>
+			<AddEntryForm createEntry={addEntry}/>
 		</Toggleable>
 	)
 
