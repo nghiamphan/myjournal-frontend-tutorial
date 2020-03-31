@@ -34,7 +34,16 @@ const App = () => {
       .then(initialEntries => {
         setEntries(initialEntries)
       })
-  }, [])
+	}, [])
+	
+	useEffect(() => {
+		const loggedInUserJSON = window.localStorage.getItem('loggedInUser')
+		if (loggedInUserJSON) {
+			const user = JSON.parse(loggedInUserJSON)
+			setUser(user)
+			journalEntryService.setToken(user.token)
+		}
+	}, [])
 
   const entriesToShow = showAll
     ? entries
@@ -96,6 +105,7 @@ const App = () => {
 				username, password
 			})
 
+			window.localStorage.setItem('loggedInUser', JSON.stringify(user))
 			journalEntryService.setToken(user.token)
 			setUser(user)
 			setUsername('')
