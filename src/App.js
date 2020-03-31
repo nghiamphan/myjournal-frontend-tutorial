@@ -96,6 +96,7 @@ const App = () => {
 				username, password
 			})
 
+			journalEntryService.setToken(user.token)
 			setUser(user)
 			setUsername('')
 			setPassword('')
