@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import JournalEntry from './components/JournalEntry';
 import Notification from './components/Notification';
 import journalEntryService from './services/journalEntryService'
+import loginService from './services/loginService';
 
 const Footer = () => {
   const footerStyle = {
@@ -23,6 +24,9 @@ const App = () => {
   const [newEntry, setNewEntry] = useState('new entry...')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
+  const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+	const [user, setUser] = useState(null)
 
   useEffect(() => {
     journalEntryService
@@ -85,10 +89,72 @@ const App = () => {
     setNewEntry(event.target.value)
   }
 
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+			const user = await loginService.login({
+				username, password
+			})
+
+			setUser(user)
+			setUsername('')
+			setPassword('')
+		} catch (exception) {
+			setErrorMessage('Wrong credentials')
+			setTimeout(() => {
+				setErrorMessage(null)
+			}, 5000)
+		}
+	}
+	
+	const loginForm = () => (
+		<form onSubmit={handleLogin}>
+			<h2>Login</h2>
+			<div>
+				username
+					<input
+					type="text"
+					value={username}
+					name="Username"
+					onChange={({ target }) => setUsername(target.value)}
+				/>
+			</div>
+			<div>
+				password
+					<input
+					type="password"
+					value={password}
+					name="Password"
+					onChange={({ target }) => setPassword(target.value)}
+				/>
+			</div>
+			<button type="submit">login</button>
+		</form>
+	)
+
+	const addJournalEntryForm = () => (
+		<form onSubmit={addEntry}>
+			<input
+				value={newEntry}
+				onChange={handleEntryChange}
+			/>
+			<button type="submit">save</button>
+		</form>
+	)
+
   return (
     <div>
       <h1>Journal</h1>
       <Notification message={errorMessage} />
+      
+			{user === null ?
+				loginForm() :
+				<div>
+					<p>Hello {user.name}</p>
+					{addJournalEntryForm()}
+				</div>
+			}
+
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -97,13 +163,7 @@ const App = () => {
       <ul>
         {rows()}
       </ul>
-      <form onSubmit={addEntry}>
-        <input
-          value={newEntry}
-          onChange={handleEntryChange}
-        />
-        <button type="submit">save</button>
-      </form>
+      
       <Footer />
     </div>
   )
