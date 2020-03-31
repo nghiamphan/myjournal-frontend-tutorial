@@ -78,6 +78,7 @@ const App = () => {
   )
 
   const addEntry = (entryObject) => {
+		addEntryFormRef.current.toggleVisibility()
     // Note: there is a diff b/w entryObject and response.data is that id attribute is automatically created in response.data
     journalEntryService
       .create(entryObject)
@@ -115,8 +116,12 @@ const App = () => {
 		)
 	}
 
+	const addEntryFormRef = React.createRef()
+
 	const addJournalEntryForm = () => (
-		<Toggleable buttonLabel="new entry">
+		<Toggleable
+			buttonLabel="new entry"
+			ref={addEntryFormRef}>
 			<AddEntryForm createEntry={addEntry}/>
 		</Toggleable>
 	)
