@@ -25,9 +25,7 @@ const Footer = () => {
 const App = () => {
   const [entries, setEntries] = useState([])
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
+	const [errorMessage, setErrorMessage] = useState('')
 	const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -88,18 +86,12 @@ const App = () => {
       })
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (userObject) => {
     try {
-			const user = await loginService.login({
-				username, password
-			})
-
+			const user = await loginService.login(userObject)
 			window.localStorage.setItem('loggedInUser', JSON.stringify(user))
 			journalEntryService.setToken(user.token)
 			setUser(user)
-			setUsername('')
-			setPassword('')
 		} catch (exception) {
 			setErrorMessage('Wrong credentials')
 			setTimeout(() => {
@@ -117,11 +109,7 @@ const App = () => {
 		return (
 			<Toggleable buttonLabel='login'>
 				<LoginForm
-					username={username}
-					password={password}
-					handleUsernameChange={({ target}) => setUsername(target.value)}
-					handlePasswordChange={({ target }) => setPassword(target.value)}
-					handleSubmit={handleLogin}
+					handleLogin={handleLogin}
 				/>
 			</Toggleable>
 		)
