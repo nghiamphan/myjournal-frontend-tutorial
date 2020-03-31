@@ -117,6 +117,11 @@ const App = () => {
 			}, 5000)
 		}
 	}
+
+	const handleLogout = () => {
+		setUser(null)
+		window.localStorage.removeItem('loggedInUser')
+	}
 	
 	const loginForm = () => (
 		<form onSubmit={handleLogin}>
@@ -161,6 +166,7 @@ const App = () => {
 			{user === null ?
 				loginForm() :
 				<div>
+					<button onClick={() => handleLogout()}>logout</button>
 					<p>Hello {user.name}</p>
 					{addJournalEntryForm()}
 				</div>
