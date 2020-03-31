@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import JournalEntry from './components/JournalEntry';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm'
+import AddEntryForm from './components/AddEntryForm'
+import Toggleable from './components/Toggleable'
 import journalEntryService from './services/journalEntryService'
 import loginService from './services/loginService';
 
@@ -28,7 +30,6 @@ const App = () => {
   const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
-	const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     journalEntryService
@@ -126,36 +127,27 @@ const App = () => {
 	}
 	
 	const loginForm = () => {
-		const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-		const showWhenVisible = { display: loginVisible ? '' : 'none'}
-
 		return (
-			<div>
-				<div style={hideWhenVisible}>
-					<button onClick={() => setLoginVisible(true)}>log in</button>
-				</div>
-				<div style={showWhenVisible}>
-					<LoginForm
-						username={username}
-						password={password}
-						handleUsernameChange={({ target}) => setUsername(target.value)}
-						handlePasswordChange={({ target }) => setPassword(target.value)}
-						handleSubmit={handleLogin}
-					/>
-					<button onClick={() => setLoginVisible(false)}>cancel</button>
-				</div>
-			</div>
+			<Toggleable buttonLabel='login'>
+				<LoginForm
+					username={username}
+					password={password}
+					handleUsernameChange={({ target}) => setUsername(target.value)}
+					handlePasswordChange={({ target }) => setPassword(target.value)}
+					handleSubmit={handleLogin}
+				/>
+			</Toggleable>
 		)
 	}
 
 	const addJournalEntryForm = () => (
-		<form onSubmit={addEntry}>
-			<input
+		<Toggleable buttonLabel="new entry">
+			<AddEntryForm
+				onSubmit={addEntry}
 				value={newEntry}
-				onChange={handleEntryChange}
+				handleChange={handleEntryChange}
 			/>
-			<button type="submit">save</button>
-		</form>
+		</Toggleable>
 	)
 
   return (
